@@ -106,9 +106,12 @@ FilamentApp& FilamentApp::get() {
 
 FilamentApp::FilamentApp() {
     initSDL();
+  //  SDL_SetHint("SDL_HINT_IME_SHOW_UI", "1");
+   // SDL_StartTextInput(); 
 }
 
 FilamentApp::~FilamentApp() {
+   // SDL_StopTextInput();
     SDL_Quit();
 }
 
@@ -428,6 +431,8 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback, size_t 
             }
             nevents++;
         }
+        const int MAX_INPUT_LENGTH = 256;
+        char input_text[MAX_INPUT_LENGTH] = "";
         int dragging = 0;
         // Now, loop over the events a second time for app-side processing.
         for (int i = 0; i < nevents; i++) {
@@ -464,6 +469,16 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback, size_t 
                    // SDL_SetWindowPosition(webWindow, 0, 200);
                  
                     break;
+                case SDL_TEXTEDITING:
+                    // 处理预编辑文本
+                    printf("Editing: %s\n", event.edit.text);
+                    break;
+                case SDL_TEXTINPUT:
+                    // 处理确定的文本
+                    strncat(input_text, event.text.text, MAX_INPUT_LENGTH - strlen(input_text) - 1);
+                    printf("Input: %s\n", input_text);
+                    break;
+
                 case SDL_MOUSEWHEEL:
                     if (!io || !io->WantCaptureMouse)
                         window->mouseWheel(event.wheel.y);
@@ -473,9 +488,7 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback, size_t 
                     if (!io || !io->WantCaptureMouse)
                         window->mouseDown(event.button.button, event.button.x, event.button.y);
                     dragging = 0;
-                 
-               
-                    break;
+                    break;      
                 case SDL_MOUSEBUTTONUP:
                     if (!io || !io->WantCaptureMouse)
                         window->mouseUp(event.button.x, event.button.y);
@@ -724,6 +737,7 @@ void FilamentApp::loadDirt(const Config& config) {
 
 void FilamentApp::initSDL() {
     ASSERT_POSTCONDITION(SDL_Init(SDL_INIT_EVENTS) == 0, "SDL_Init Failure");
+   
 }
 
 // ------------------------------------------------------------------------------------------------
