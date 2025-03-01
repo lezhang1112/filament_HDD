@@ -311,55 +311,57 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback, size_t 
     SDL_DestroyWindow(Texwindow);
     SDL_FreeSurface(surface);
     
-    if (!webWindow)
+    if (webCallback)
     {
-        SDL_SysWMinfo sdlinfo;
-        {
-            SDL_ShowWindow(sdlWindow);
+        if (!webWindow) {
+            SDL_SysWMinfo sdlinfo;
+            {
+                SDL_ShowWindow(sdlWindow);
 
-            SDL_VERSION(&sdlinfo.version);
-            SDL_GetWindowWMInfo(sdlWindow, &sdlinfo);
-        }
-        HWND hwndChild = CreateWindowEx(
-            0,                   // 扩展窗口样式
-            "STATIC",  // 窗口类名
-            "ChildWindow",                // 窗口标题（无标题子窗口）
-            WS_CHILD| WS_VISIBLE,            // 窗口样式：子窗口
-            0, 103,                // 子窗口的初始x, y位置
-            200, 929,            // 子窗口的宽度和高度
-            sdlinfo.info.win.window,          // 父窗口句柄
-            NULL,                   // 子窗口ID
-            NULL,           // 程序实例句柄
-            NULL                 // 额外的窗口创建参数
-        );
-     
-        webWindow = SDL_CreateWindowFrom(hwndChild);
-        //// 创建窗口
-        //webWindow = SDL_CreateWindow(
-        //    "SDL Window",
-        //    SDL_WINDOWPOS_UNDEFINED,
-        //    SDL_WINDOWPOS_UNDEFINED,
-        //    200,
-        //    929,
-        //    SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR /*| SDL_WINDOW_ALWAYS_ON_TOP*/
-        //);
-       
-        if (webWindow) {
-
-            // 将SDL窗口附加到父窗口
-
-
-            SDL_ShowWindow(webWindow);
-            SDL_SysWMinfo info;
-            SDL_VERSION(&info.version);
-            if (SDL_GetWindowWMInfo(webWindow, &info)) {
-                webCallback((unsigned long long)info.info.win.window);
+                SDL_VERSION(&sdlinfo.version);
+                SDL_GetWindowWMInfo(sdlWindow, &sdlinfo);
             }
-            SetWindowLong((HWND)(unsigned long long)info.info.win.window, (-8), (unsigned long long)sdlinfo.info.win.window);
-            
-            SDL_SetWindowPosition(webWindow, 0, 103);
-            //SetWindowPos(info.info.win.window, sdlinfo.info.win.window, 0, 103, 200,929, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-            window->setWEBWindow(webWindow);
+            HWND hwndChild = CreateWindowEx(
+                0,                   // 扩展窗口样式
+                "STATIC",  // 窗口类名
+                "ChildWindow",                // 窗口标题（无标题子窗口）
+                WS_CHILD | WS_VISIBLE,            // 窗口样式：子窗口
+                0, 103,                // 子窗口的初始x, y位置
+                200, 929,            // 子窗口的宽度和高度
+                sdlinfo.info.win.window,          // 父窗口句柄
+                NULL,                   // 子窗口ID
+                NULL,           // 程序实例句柄
+                NULL                 // 额外的窗口创建参数
+            );
+
+            webWindow = SDL_CreateWindowFrom(hwndChild);
+            //// 创建窗口
+            //webWindow = SDL_CreateWindow(
+            //    "SDL Window",
+            //    SDL_WINDOWPOS_UNDEFINED,
+            //    SDL_WINDOWPOS_UNDEFINED,
+            //    200,
+            //    929,
+            //    SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR /*| SDL_WINDOW_ALWAYS_ON_TOP*/
+            //);
+
+            if (webWindow) {
+
+                // 将SDL窗口附加到父窗口
+
+
+                SDL_ShowWindow(webWindow);
+                SDL_SysWMinfo info;
+                SDL_VERSION(&info.version);
+                if (SDL_GetWindowWMInfo(webWindow, &info)) {
+                    webCallback((unsigned long long)info.info.win.window);
+                }
+                SetWindowLong((HWND)(unsigned long long)info.info.win.window, (-8), (unsigned long long)sdlinfo.info.win.window);
+
+                SDL_SetWindowPosition(webWindow, 0, 103);
+                //SetWindowPos(info.info.win.window, sdlinfo.info.win.window, 0, 103, 200,929, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                window->setWEBWindow(webWindow);
+            }
         }
     }
     while (!mClosed) {
@@ -1115,7 +1117,7 @@ void FilamentApp::Window::configureCamerasForWindow() {
         mGodView->setViewport  ({ int32_t(vpw), int32_t(vph), width - vpw, height - vph });
         mOrthoView->setViewport({            0, int32_t(vph), vpw,         height - vph });
     } else {
-        mMainView->setViewport({ /*sidebar*/leftsidebar, topmenu, mainWidth, mainHeight });
+        mMainView->setViewport({ /*sidebar*/leftsidebar, /*topmenu*/0, mainWidth, mainHeight });
     }
     mUiView->setViewport({ 0, 0, width, height });
 }

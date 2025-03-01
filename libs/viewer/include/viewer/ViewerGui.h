@@ -61,7 +61,7 @@ public:
     using FilamentAsset = gltfio::FilamentAsset;
     using FilamentInstance =  gltfio::FilamentInstance;
 
-    static constexpr int DEFAULT_SIDEBAR_WIDTH = 350;
+    static constexpr int DEFAULT_SIDEBAR_WIDTH = 400;
     static constexpr int DEFAULT_LEFT_SIDEBAR_WIDTH = 200;
     static constexpr int DEFAULT_TOP_MENU_HIEGHT = 80;
     /**
