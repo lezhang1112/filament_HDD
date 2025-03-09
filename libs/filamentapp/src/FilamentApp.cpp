@@ -242,7 +242,7 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback, size_t 
     if (imguiCallback) {
     
         mImGuiHelper = std::make_unique<ImGuiHelper>(mEngine, window->mUiView->getView(),
-            getRootAssetsPath() + "assets/fonts/NotoSansSC-Medium.ttf",nullptr, imguinotify);
+            "assets/fonts/NotoSansSC-Medium.ttf",nullptr, imguinotify);
         ImGuiIO& io = ImGui::GetIO();
 
         
@@ -939,7 +939,7 @@ void FilamentApp::Window::mouseDown(int button, ssize_t x, ssize_t y) {
 }
 
 void FilamentApp::Window::mouseWheel(ssize_t x) {
-    x = 0;
+    x *= 10;
     if (mMouseEventTarget) {
         mMouseEventTarget->mouseWheel(x);
     } else {

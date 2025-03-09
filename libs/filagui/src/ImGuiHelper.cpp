@@ -66,8 +66,9 @@ ImGuiHelper::ImGuiHelper(Engine* engine, filament::View* view, const Path& fontP
 
     // If the given font path is invalid, ImGui will silently fall back to proggy, which is a
     // tiny "pixel art" texture that is compiled into the library.
-    if (fontPath.isFile()) {
-        io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 16.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    //if (fontPath.isFile()) 
+    {
+        io.Fonts->AddFontFromFileTTF("assets/fonts/NotoSansSC-Medium.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
     }
     imguinotify();
     createAtlasTexture(engine);

@@ -408,7 +408,23 @@ ViewerGui::~ViewerGui() {
     mEngine->destroy(mSunlight);
     delete mImGuiHelper;
 }
+void ViewerGui::setCustomAsset(FilamentAsset* asset) {
+    if (mAsset != asset) {
+        //removeAsset();
 
+        // We keep a non-const reference to the asset for popRenderables and getWireframe.
+        mAsset = asset;
+        mInstance = asset->getInstance();
+
+        //updateRootTransform();
+        mScene->addEntities(asset->getEntities(), asset->getEntityCount());
+      /*  auto& rcm = mEngine->getRenderableManager();
+        for (size_t i = 0, n = asset->getRenderableEntityCount(); i < n; i++) {
+            auto ri = rcm.getInstance(asset->getRenderableEntities()[i]);
+            rcm.setScreenSpaceContactShadows(ri, true);
+        }*/
+    }
+}
 void ViewerGui::setAsset(FilamentAsset* asset, FilamentInstance* instance) {
     if (mInstance != instance || mAsset != asset) {
         removeAsset();
